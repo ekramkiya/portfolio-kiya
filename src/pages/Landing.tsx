@@ -31,6 +31,7 @@ import { Link } from "react-router";
 import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -138,10 +139,10 @@ function Nav() {
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
         <a href="#top" className="group flex items-center gap-2.5">
           <span className="flex size-9 items-center justify-center rounded-xl bg-primary font-display text-sm font-bold text-primary-foreground shadow-sm transition-transform duration-300 group-hover:-rotate-6">
-            A
+            E
           </span>
           <span className="text-sm font-semibold tracking-tight">
-            Alex Carter<span className="text-primary">.</span>
+            Ekram Kiya<span className="text-primary">.</span>
           </span>
         </a>
 
@@ -158,6 +159,7 @@ function Nav() {
         </div>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
             <Link to="/auth?returnTo=/dashboard">Sign in</Link>
           </Button>
@@ -325,7 +327,7 @@ function Hero() {
             custom={2}
             className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
           >
-            I&apos;m Alex — a developer who ships production-grade products with
+            I&apos;m Ekram — a developer who ships production-grade products with
             Laravel, Django and React. From REST APIs to polished interfaces,
             I design and build web software end to end.
           </motion.p>
@@ -761,8 +763,8 @@ const CONTACT_ROWS = [
   {
     icon: Mail,
     label: "Email",
-    value: "hello@alexcarter.dev",
-    href: "mailto:hello@alexcarter.dev",
+    value: "ekramkiya00@gmail.com",
+    href: "mailto:ekramkiya00@gmail.com",
   },
   { icon: MapPin, label: "Location", value: "Remote · Worldwide" },
   { icon: Clock, label: "Response time", value: "Usually within 24 hours" },
@@ -969,10 +971,10 @@ function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 sm:flex-row sm:px-8">
         <div className="flex items-center gap-2.5">
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary font-display text-xs font-bold text-primary-foreground">
-            A
+            E
           </span>
           <p className="text-sm text-muted-foreground">
-            © 2026 Alex Carter. Crafted with Laravel thinking &amp; React energy.
+            © 2026 Ekram Kiya. Crafted with Laravel thinking &amp; React energy.
           </p>
         </div>
         <div className="flex items-center gap-5 text-xs text-muted-foreground">

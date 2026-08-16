@@ -11,6 +11,7 @@ import {
 import { Link, useNavigate } from "react-router";
 
 import { api } from "@/convex/_generated/api";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,15 +59,18 @@ export default function Dashboard() {
               Messages sent through the contact form on your portfolio land here.
             </p>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            className="cursor-pointer gap-2 self-start"
-            onClick={handleSignOut}
-          >
-            <LogOut className="size-4" />
-            Sign out
-          </Button>
+          <div className="flex items-center gap-2 self-start">
+            <ThemeToggle />
+            <Button
+              type="button"
+              variant="outline"
+              className="cursor-pointer gap-2"
+              onClick={handleSignOut}
+            >
+              <LogOut className="size-4" />
+              Sign out
+            </Button>
+          </div>
         </header>
 
         <div className="flex flex-col gap-4">
