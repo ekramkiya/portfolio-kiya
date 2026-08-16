@@ -15,12 +15,14 @@ import {
   MapPin,
   Package,
   PenTool,
+  Quote,
   Rocket,
   Search,
   Send,
   ShoppingBag,
   Smartphone,
   Sparkles,
+  Star,
   ThumbsUp,
   Truck,
   Users,
@@ -127,6 +129,7 @@ const NAV_LINKS = [
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
   { label: "Work", href: "#work" },
+  { label: "Testimonials", href: "#testimonials" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -831,6 +834,146 @@ function Work() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Testimonials                                                        */
+/* ------------------------------------------------------------------ */
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "Web Global Horizon rebuilt our storefront in eight weeks. Conversion is up 34% and the platform hasn't hiccuped once since launch — easily the smoothest vendor relationship we've had.",
+    name: "Sarah Mitchell",
+    role: "COO, Atlas Commerce",
+    service: "Web Development",
+    initials: "SM",
+    gradient: "from-sky-500 to-indigo-600",
+  },
+  {
+    quote:
+      "They took our legacy warehouse data and turned it into a platform our analysts actually trust. Dashboards that took minutes now load in under a second.",
+    name: "Daniel Okafor",
+    role: "Head of Data, Meridian Logistics",
+    service: "Database Development",
+    initials: "DO",
+    gradient: "from-teal-500 to-cyan-600",
+  },
+  {
+    quote:
+      "Our AI support copilot now resolves 70% of tickets instantly. The team was thoughtful about guardrails and kept humans in the loop — our CSAT has never been higher.",
+    name: "Priya Sharma",
+    role: "VP Customer Experience, Nova Support",
+    service: "AI Automation",
+    initials: "PS",
+    gradient: "from-blue-500 to-violet-600",
+  },
+  {
+    quote:
+      "From wireframe to the App Store in ten weeks. Live tracking, push notifications, offline mode — the app feels native on both platforms. Riders and customers love it.",
+    name: "Marcus Chen",
+    role: "Founder, Drift Delivery",
+    service: "Mobile App Development",
+    initials: "MC",
+    gradient: "from-amber-500 to-rose-500",
+  },
+  {
+    quote:
+      "Weekly demos meant zero surprises. Scope changes were costed transparently and folded in at sprint boundaries. It's the first agency that felt like an in-house team.",
+    name: "Elena Petrova",
+    role: "Product Manager, Cloudline SaaS",
+    service: "Web Development",
+    initials: "EP",
+    gradient: "from-indigo-500 to-sky-600",
+  },
+  {
+    quote:
+      "The AI pipeline they built processes thousands of patient documents a day with human review on edge cases. It saved our care team hours every single day.",
+    name: "James Whitfield",
+    role: "CEO, Northstar Health",
+    service: "AI Automation",
+    initials: "JW",
+    gradient: "from-cyan-500 to-emerald-600",
+  },
+];
+
+function Testimonials() {
+  return (
+    <section id="testimonials" className="scroll-mt-24 bg-secondary/30 py-20 lg:py-28">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <SectionHeading
+            eyebrow="Testimonials"
+            title="Clients who trusted the horizon"
+            description="Don&apos;t take our word for it — here&apos;s what founders and teams say after shipping with us."
+          />
+          <Reveal delay={0.2} className="shrink-0">
+            <div className="flex items-center gap-3.5 rounded-2xl border bg-card px-5 py-4 shadow-sm">
+              <span className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
+                ))}
+              </span>
+              <div className="text-sm leading-tight">
+                <p className="font-bold">4.9 / 5 average</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  across 60+ client projects
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        <div className="mt-12 columns-1 gap-6 md:columns-2 lg:columns-3">
+          {TESTIMONIALS.map((t, i) => (
+            <motion.figure
+              key={t.name}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              custom={i}
+              className="mb-6 break-inside-avoid rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Quote className="size-5" />
+                </span>
+                <Badge variant="secondary" className="font-medium">
+                  {t.service}
+                </Badge>
+              </div>
+
+              <div className="mt-4 flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="size-3.5 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+
+              <blockquote className="mt-3 text-sm leading-7 text-muted-foreground">
+                “{t.quote}”
+              </blockquote>
+
+              <figcaption className="mt-5 flex items-center gap-3 border-t pt-4">
+                <span
+                  className={cn(
+                    "flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-xs font-bold text-white shadow-sm",
+                    t.gradient,
+                  )}
+                >
+                  {t.initials}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{t.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">{t.role}</p>
+                </div>
+              </figcaption>
+            </motion.figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Contact                                                             */
 /* ------------------------------------------------------------------ */
 
@@ -1155,6 +1298,7 @@ export default function Landing() {
         <Services />
         <Process />
         <Work />
+        <Testimonials />
         <Contact />
       </main>
       <Footer />
