@@ -32,10 +32,11 @@ const schema = defineSchema(
       role: v.optional(roleValidator), // role of the user. do not remove
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
-    // Contact form submissions from the portfolio landing page.
+    // Contact form submissions from the landing page.
     contactMessages: defineTable({
       name: v.string(), // sender name
       email: v.string(), // sender email
+      service: v.optional(v.string()), // service the sender is interested in
       subject: v.optional(v.string()), // optional subject line
       message: v.string(), // message body
       read: v.boolean(), // whether the owner has seen it

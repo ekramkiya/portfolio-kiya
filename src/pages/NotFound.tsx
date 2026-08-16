@@ -36,7 +36,7 @@ export default function NotFound() {
           className="mt-3 max-w-md text-muted-foreground"
         >
           This page wandered off the route map. Let&apos;s get you back to the
-          portfolio.
+          website.
         </motion.p>
         <motion.div
           initial={{ y: 16, opacity: 0 }}

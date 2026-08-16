@@ -47,7 +47,7 @@ export default function Dashboard() {
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              Portfolio inbox
+              Web Global Horizon
             </p>
             <h1 className="mt-1 flex items-center gap-3 text-3xl font-bold tracking-tight">
               Inbox
@@ -56,7 +56,7 @@ export default function Dashboard() {
               )}
             </h1>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              Messages sent through the contact form on your portfolio land here.
+              Messages sent through the contact form on your website land here.
             </p>
           </div>
           <div className="flex items-center gap-2 self-start">
@@ -100,11 +100,11 @@ export default function Dashboard() {
                 </div>
                 <h2 className="text-lg font-semibold">No messages yet</h2>
                 <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-                  When someone submits the contact form on your portfolio, their
+                  When someone submits the contact form on your website, their
                   message will show up here. Until then, enjoy the quiet.
                 </p>
                 <Button asChild variant="outline" className="mt-6 gap-2">
-                  <Link to="/">Back to portfolio</Link>
+                  <Link to="/">Back to website</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -148,9 +148,16 @@ export default function Dashboard() {
                           {message.email}
                         </a>
                       </div>
-                      {message.subject && (
-                        <p className="mt-1 text-sm font-medium">{message.subject}</p>
-                      )}
+                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                        {message.service && (
+                          <Badge variant="secondary" className="font-medium">
+                            {message.service}
+                          </Badge>
+                        )}
+                        {message.subject && (
+                          <p className="text-sm font-medium">{message.subject}</p>
+                        )}
+                      </div>
                       <p className="mt-1.5 whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
                         {message.message}
                       </p>
@@ -200,7 +207,7 @@ export default function Dashboard() {
 
         <footer className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
           <Inbox className="size-3.5" />
-          Signed in as {user?.email ?? "guest"} · RequireAuth-protected route
+          Signed in as {user?.email ?? "guest"} · Web Global Horizon
         </footer>
       </div>
     </main>

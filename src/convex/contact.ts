@@ -3,18 +3,20 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 /**
- * Public: store a contact form submission from the portfolio landing page.
+ * Public: store a contact form submission from the landing page.
  */
 export const send = mutation({
   args: {
     name: v.string(),
     email: v.string(),
+    service: v.optional(v.string()),
     subject: v.optional(v.string()),
     message: v.string(),
   },
   handler: async (ctx, args) => {
     const name = args.name.trim().slice(0, 120);
     const email = args.email.trim().slice(0, 200);
+    const service = (args.service ?? "").trim().slice(0, 120) || undefined;
     const subject = (args.subject ?? "").trim().slice(0, 200) || undefined;
     const message = args.message.trim().slice(0, 5000);
 
@@ -25,6 +27,7 @@ export const send = mutation({
     await ctx.db.insert("contactMessages", {
       name,
       email,
+      service,
       subject,
       message,
       read: false,
