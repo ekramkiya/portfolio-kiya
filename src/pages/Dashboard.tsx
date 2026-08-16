@@ -47,7 +47,7 @@ export default function Dashboard() {
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              Web Global Horizon
+              Global Horizon
             </p>
             <h1 className="mt-1 flex items-center gap-3 text-3xl font-bold tracking-tight">
               Inbox
@@ -207,7 +207,7 @@ export default function Dashboard() {
 
         <footer className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
           <Inbox className="size-3.5" />
-          Signed in as {user?.email ?? "guest"} · Web Global Horizon
+          Signed in as {user?.email ?? "guest"} · Global Horizon
         </footer>
       </div>
     </main>

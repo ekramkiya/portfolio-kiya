@@ -39,7 +39,7 @@ export function SiteNav() {
             <Globe2 className="size-5" />
           </span>
           <span className="text-sm font-semibold tracking-tight">
-            Web Global <span className="text-primary">Horizon</span>
+            Global <span className="text-primary">Horizon</span>
           </span>
         </Link>
 

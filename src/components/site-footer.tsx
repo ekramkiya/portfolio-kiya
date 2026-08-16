@@ -15,7 +15,7 @@ export function SiteFooter() {
                 <Globe2 className="size-5" />
               </span>
               <span className="text-sm font-semibold tracking-tight">
-                Web Global <span className="text-primary">Horizon</span>
+                Global <span className="text-primary">Horizon</span>
               </span>
             </Link>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -87,7 +87,7 @@ export function SiteFooter() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
           <p className="text-xs text-muted-foreground">
-            © 2026 Web Global Horizon. All rights reserved.
+            © 2026 Global Horizon. All rights reserved.
           </p>
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Code2 className="size-3.5 text-primary/70" />

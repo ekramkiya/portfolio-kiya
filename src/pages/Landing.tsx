@@ -158,7 +158,7 @@ function Nav() {
             <Globe2 className="size-5" />
           </span>
           <span className="text-sm font-semibold tracking-tight">
-            Web Global <span className="text-primary">Horizon</span>
+            Global <span className="text-primary">Horizon</span>
           </span>
         </a>
 
@@ -264,7 +264,7 @@ function OrbitVisual() {
             Horizon
           </p>
           <p className="-mt-1.5 text-[11px] text-muted-foreground">
-            Web Global Studio
+            Global Horizon Studio
           </p>
         </div>
       </div>
@@ -317,7 +317,7 @@ function Hero() {
             custom={2}
             className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
           >
-            Web Global Horizon designs, builds and scales web platforms, mobile
+            Global Horizon designs, builds and scales web platforms, mobile
             apps, databases and AI automation — one team, one vision, from first
             wireframe to global launch.
           </motion.p>
@@ -840,7 +840,7 @@ function Work() {
 const TESTIMONIALS = [
   {
     quote:
-      "Web Global Horizon rebuilt our storefront in eight weeks. Conversion is up 34% and the platform hasn't hiccuped once since launch — easily the smoothest vendor relationship we've had.",
+      "Global Horizon rebuilt our storefront in eight weeks. Conversion is up 34% and the platform hasn't hiccuped once since launch — easily the smoothest vendor relationship we've had.",
     name: "Sarah Mitchell",
     role: "COO, Atlas Commerce",
     service: "Web Development",
@@ -1199,7 +1199,7 @@ function Footer() {
                 <Globe2 className="size-5" />
               </span>
               <span className="text-sm font-semibold tracking-tight">
-                Web Global <span className="text-primary">Horizon</span>
+                Global <span className="text-primary">Horizon</span>
               </span>
             </a>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -1271,7 +1271,7 @@ function Footer() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
           <p className="text-xs text-muted-foreground">
-            © 2026 Web Global Horizon. All rights reserved.
+            © 2026 Global Horizon. All rights reserved.
           </p>
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Code2 className="size-3.5 text-primary/70" />
