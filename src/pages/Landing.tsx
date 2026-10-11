@@ -1,4 +1,4 @@
-import { useMutation } from "convex/react";
+// import { useMutation } from "convex/react";
 import { motion, useScroll, type Variants } from "framer-motion";
 import {
   ArrowDown,
@@ -35,7 +35,7 @@ import {
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
-import { api } from "@/convex/_generated/api";
+// import { api } from "@/convex/_generated/api";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -1045,7 +1045,6 @@ function Experience() {
 
 /* ------------------------------------------------------------------ */
 /* Contact                                                             */ /* ------------------------------------------------------------------ */
-
 const CONTACT_ROWS = [
   { icon: Mail, label: "Email", value: PROFILE.email, href: `mailto:${PROFILE.email}` },
   { icon: Phone, label: "Phone", value: PROFILE.phone, href: PROFILE.phoneHref },
@@ -1068,12 +1067,12 @@ const TOPIC_OPTIONS = [
 ];
 
 function Contact() {
-  const sendMessage = useMutation(api.contact.send);
   const formRef = useRef<HTMLFormElement>(null);
   const [sending, setSending] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
     const name = String(data.get("name") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
@@ -1088,16 +1087,33 @@ function Contact() {
     }
 
     setSending(true);
+
     try {
-      await sendMessage({ name, email, service: topic || undefined, message });
-      toast.success("Message sent", {
-        description: "Thanks for reaching out — I'll get back to you soon.",
+      const subject = encodeURIComponent(
+        topic
+          ? `Portfolio inquiry: ${topic}`
+          : `Portfolio inquiry from ${name}`
+      );
+
+      const body = encodeURIComponent(
+        `Name: ${name}\nEmail: ${email}\nTopic: ${
+          topic || "Not specified"
+        }\n\nMessage:\n${message}`
+      );
+
+      const mailtoUrl = `mailto:${PROFILE.email}?subject=${subject}&body=${body}`;
+
+      window.location.href = mailtoUrl;
+
+      toast.success("Email draft prepared", {
+        description:
+          "Your email application should open with your message ready to send.",
       });
-      formRef.current?.reset();
     } catch (error) {
-      console.error("Failed to send message:", error);
-      toast.error("Couldn't send your message", {
-        description: "Please try again in a moment.",
+      console.error("Failed to prepare email:", error);
+
+      toast.error("Couldn't prepare your message", {
+        description: "Please try again or contact me directly by email.",
       });
     } finally {
       setSending(false);
@@ -1159,7 +1175,9 @@ function Contact() {
                   <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold">Available for new projects</p>
+                  <p className="text-sm font-semibold">
+                    Available for new projects
+                  </p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
                     Open to freelance work, remote full-time roles and
                     long-term collaborations worldwide.
@@ -1189,6 +1207,7 @@ function Contact() {
                     required
                   />
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <label htmlFor="contact-email" className="text-sm font-medium">
                     Email
@@ -1228,7 +1247,10 @@ function Contact() {
               </div>
 
               <div className="mt-5 flex flex-col gap-2">
-                <label htmlFor="contact-message" className="text-sm font-medium">
+                <label
+                  htmlFor="contact-message"
+                  className="text-sm font-medium"
+                >
                   Message
                 </label>
                 <Textarea
@@ -1245,9 +1267,14 @@ function Contact() {
                 <p className="text-xs text-muted-foreground">
                   Replies usually within 24 hours — no spam, ever.
                 </p>
-                <Button type="submit" size="lg" className="gap-2" disabled={sending}>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="gap-2"
+                  disabled={sending}
+                >
                   <Send className="size-4" />
-                  {sending ? "Sending..." : "Send message"}
+                  {sending ? "Preparing..." : "Send message"}
                 </Button>
               </div>
             </form>

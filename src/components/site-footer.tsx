@@ -108,7 +108,7 @@ export function SiteFooter() {
           </p>
           <span className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
             <Code2 className="size-3.5 text-primary/70" />
-            React · Tailwind · Convex
+            React · Tailwind 
           </span>
         </div>
       </div>
