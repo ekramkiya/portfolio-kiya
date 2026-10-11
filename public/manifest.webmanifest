@@ -1,11 +1,11 @@
 {
-  "name": "freebuff.com application",
-  "short_name": "freebuff.com",
-  "description": "freebuff.com application",
+  "name": "Ekramullah Kiya — Software Engineer & Full-Stack Developer",
+  "short_name": "Ekramullah Kiya",
+  "description": "Portfolio of Ekramullah Kiya — Software Engineer & Full-Stack Developer specializing in PHP, Laravel, React.js and AWS.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#15803d",
   "icons": [
     {
       "src": "/logo.png",

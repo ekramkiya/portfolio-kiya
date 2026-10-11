@@ -1,43 +1,35 @@
 import { useMutation } from "convex/react";
-import { motion, type Variants } from "framer-motion";
+import { motion, useScroll, type Variants } from "framer-motion";
 import {
   ArrowDown,
   ArrowRight,
-  Bot,
-  BrainCircuit,
+  Boxes,
+  Brain,
+  Briefcase,
   Check,
-  Clock,
+  Cloud,
   Code2,
   Database,
-  ExternalLink,
-  Globe2,
+  GraduationCap,
+  HeartHandshake,
+  Layers,
+  Leaf,
+  Lightbulb,
+  Linkedin,
   Mail,
   MapPin,
-  Package,
-  PenTool,
-  Quote,
-  Rocket,
-  Search,
+  MessagesSquare,
+  Monitor,
+  Phone,
   Send,
+  Server,
+  ShieldCheck,
   ShoppingBag,
-  Smartphone,
   Sparkles,
-  Star,
-  ThumbsUp,
-  Truck,
   Users,
   Wrench,
-  Zap,
 } from "lucide-react";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type FormEvent,
-  type ReactNode,
-} from "react";
-import { Link } from "react-router";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api";
@@ -46,92 +38,85 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { EASE, fadeUp, Reveal, SectionHeading } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
-/* Motion helpers                                                      */
-/* ------------------------------------------------------------------ */
+/* Profile data (from CV)                                              */ /* ------------------------------------------------------------------ */
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-/** Inline style helper for the orbit animation duration. */
-function orbitStyle(duration: string): CSSProperties {
-  return { "--orbit-duration": duration } as unknown as CSSProperties;
-}
-
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: (i: number = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.65, ease: EASE, delay: i * 0.09 },
-  }),
+const PROFILE = {
+  firstName: "Ekramullah",
+  lastName: "Kiya",
+  fullName: "Ekramullah Kiya",
+  initials: "EK",
+  role: "Software Engineer & Full-Stack Developer",
+  location: "Kabul, Afghanistan, 1014",
+  email: "ekramkiya00@gmail.com",
+  phone: "+93 775456359",
+  phoneHref: "tel:+93775456359",
+  linkedin: "https://www.linkedin.com/in/ekramullah-kiya/",
+  summary:
+    "Experienced Software Engineer with 3+ years in full-stack development, leading projects and managing teams to deliver scalable SaaS applications and dynamic web platforms. Skilled in PHP, Laravel, and React.js. Proven ability to build secure backends, robust APIs, and optimized frontends. Expertise in cloud AWS and CI/CD pipeline.",
 };
 
-function Reveal({
-  children,
-  delay = 0,
-  className,
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, ease: EASE, delay }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function SectionHeading({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string;
-  title: string;
-  description?: string;
-}) {
-  return (
-    <div className="max-w-2xl">
-      <Reveal>
-        <span className="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-          <span className="h-px w-8 bg-primary/50" />
-          {eyebrow}
-        </span>
-      </Reveal>
-      <Reveal delay={0.08}>
-        <h2 className="mt-4 text-3xl font-bold sm:text-4xl">{title}</h2>
-      </Reveal>
-      {description && (
-        <Reveal delay={0.16}>
-          <p className="mt-4 text-base leading-7 text-muted-foreground">
-            {description}
-          </p>
-        </Reveal>
-      )}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Navigation                                                          */
-/* ------------------------------------------------------------------ */
-
 const NAV_LINKS = [
-  { label: "Services", href: "#services" },
-  { label: "Process", href: "#process" },
+  { label: "About", href: "#about" },
+  { label: "Skills", href: "#skills" },
   { label: "Work", href: "#work" },
-  { label: "Testimonials", href: "#testimonials" },
+  { label: "Experience", href: "#experience" },
   { label: "Contact", href: "#contact" },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Typewriter hook                                                     */ /* ------------------------------------------------------------------ */
+
+const TYPED_ROLES = [
+  "Laravel & React.js apps",
+  "scalable SaaS platforms",
+  "secure backend APIs",
+  "AWS & CI/CD pipelines",
+];
+
+function useTypewriter(words: string[]) {
+  const [text, setText] = useState("");
+  const [index, setIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const word = words[index % words.length] ?? "";
+
+    if (deleting) {
+      if (text === "") {
+        const reset = window.setTimeout(() => {
+          setDeleting(false);
+          setIndex((i) => (i + 1) % words.length);
+        }, 250);
+        return () => window.clearTimeout(reset);
+      }
+      const step = window.setTimeout(
+        () => setText((prev) => prev.slice(0, -1)),
+        26,
+      );
+      return () => window.clearTimeout(step);
+    }
+
+    if (text === word) {
+      const hold = window.setTimeout(() => setDeleting(true), 1800);
+      return () => window.clearTimeout(hold);
+    }
+
+    const step = window.setTimeout(
+      () => setText(word.slice(0, text.length + 1)),
+      55,
+    );
+    return () => window.clearTimeout(step);
+  }, [text, deleting, index, words]);
+
+  return text;
+}
+
+/* ------------------------------------------------------------------ */
+/* Navigation                                                          */ /* ------------------------------------------------------------------ */
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -154,11 +139,12 @@ function Nav() {
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
         <a href="#top" className="group flex items-center gap-2.5">
-          <span className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-cyan-500 text-primary-foreground shadow-sm transition-transform duration-300 group-hover:-rotate-6">
-            <Globe2 className="size-5" />
+          <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-emerald-400 font-display text-sm font-bold text-primary-foreground shadow-sm shadow-primary/20 transition-transform duration-300 group-hover:-rotate-6">
+            {PROFILE.initials}
           </span>
           <span className="text-sm font-semibold tracking-tight">
-            Global <span className="text-primary">Horizon</span>
+            {PROFILE.firstName}{" "}
+            <span className="text-primary">{PROFILE.lastName}</span>
           </span>
         </a>
 
@@ -176,11 +162,11 @@ function Nav() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link to="/auth?returnTo=/dashboard">Sign in</Link>
-          </Button>
-          <Button asChild size="sm">
-            <a href="#contact">Start a project</a>
+          <Button asChild size="sm" className="gap-1.5">
+            <a href="#contact">
+              Hire me
+              <ArrowRight className="size-3.5" />
+            </a>
           </Button>
         </div>
       </nav>
@@ -189,102 +175,97 @@ function Nav() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Hero — orbiting globe visual + floating service chips               */
-/* ------------------------------------------------------------------ */
+/* Hero                                                                */ /* ------------------------------------------------------------------ */
 
-const ORBIT_SERVICES = [
+const TERMINAL_LINES: { command: string; output?: string; ok?: boolean }[] = [
+  { command: "whoami", output: `${PROFILE.fullName} · ${PROFILE.role}` },
   {
-    label: "Web Apps",
-    icon: Code2,
-    position: "left-1/2 top-0 -translate-x-1/2 -translate-y-1/2",
+    command: "cat stack.txt",
+    output: "Laravel · React.js · Node.js · MySQL · MongoDB · AWS",
   },
   {
-    label: "Databases",
-    icon: Database,
-    position: "left-full top-1/2 -translate-x-1/2 -translate-y-1/2",
+    command: "cat summary.txt",
+    output: "3+ years shipping scalable SaaS apps, secure APIs & fast UIs.",
   },
-  {
-    label: "AI Automation",
-    icon: BrainCircuit,
-    position: "left-1/2 top-full -translate-x-1/2 -translate-y-1/2",
-  },
-  {
-    label: "Mobile",
-    icon: Smartphone,
-    position: "left-0 top-1/2 -translate-x-1/2 -translate-y-1/2",
-  },
+  { command: "./status.sh", output: "● Open to freelance & remote projects", ok: true },
 ];
 
-function OrbitVisual() {
+function TerminalCard() {
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[440px]">
-      {/* soft glow behind the globe */}
-      <div className="animate-glow pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-3xl" />
+    <div className="overflow-hidden rounded-2xl border bg-card shadow-2xl shadow-primary/10">
+      <div className="flex items-center gap-2 border-b bg-muted/50 px-4 py-3">
+        <span className="size-2.5 rounded-full bg-rose-400/80" />
+        <span className="size-2.5 rounded-full bg-amber-400/80" />
+        <span className="size-2.5 rounded-full bg-emerald-400/80" />
+        <span className="ml-2 truncate font-mono text-[11px] text-muted-foreground">
+          ekramullah@portfolio — zsh
+        </span>
+      </div>
 
-      {/* outer ring with the four service chips */}
-      <div
-        className="orbit-ring absolute inset-10 rounded-full border border-dashed border-primary/30"
-        style={orbitStyle("44s")}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: 0.35, delayChildren: 0.5 } },
+        }}
+        className="space-y-3 p-5 font-mono text-[12.5px] leading-relaxed sm:p-6 sm:text-[13px]"
       >
-        {ORBIT_SERVICES.map((service) => (
-          <div key={service.label} className={cn("absolute", service.position)}>
-            <div
-              className="orbit-node flex items-center gap-1.5 rounded-xl border bg-card px-3 py-2 text-xs font-semibold shadow-md"
-              style={orbitStyle("44s")}
+        {TERMINAL_LINES.map((line) => (
+          <motion.div
+            key={line.command}
+            variants={{
+              hidden: { opacity: 0, y: 8 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
+            }}
+          >
+            <p className="flex items-center gap-2 text-muted-foreground">
+              <span className="select-none text-primary">$</span>
+              {line.command}
+            </p>
+            <p
+              className={cn(
+                "mt-1 break-words pl-5",
+                line.ok ? "font-semibold text-primary" : "text-foreground",
+              )}
             >
-              <service.icon className="size-3.5 text-primary" />
-              {service.label}
-            </div>
-          </div>
+              {line.output}
+            </p>
+          </motion.div>
         ))}
-      </div>
 
-      {/* middle ring */}
-      <div
-        className="orbit-ring-reverse absolute inset-[4.5rem] rounded-full border border-primary/15"
-        style={orbitStyle("30s")}
-      >
-        <span className="absolute left-1/2 top-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/80" />
-        <span className="absolute bottom-0 left-1/2 size-2 -translate-x-1/2 translate-y-1/2 rounded-full bg-primary/60" />
-      </div>
-
-      {/* inner dashed ring */}
-      <div
-        className="orbit-ring absolute inset-[6.5rem] rounded-full border border-dashed border-primary/10"
-        style={orbitStyle("60s")}
-      />
-
-      {/* center card */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative flex size-40 flex-col items-center justify-center gap-2 rounded-[1.75rem] border bg-card shadow-xl shadow-primary/10">
-          <span className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-cyan-500 text-primary-foreground shadow-lg shadow-primary/25">
-            <Globe2 className="size-7" />
-          </span>
-          <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em]">
-            Horizon
-          </p>
-          <p className="-mt-1.5 text-[11px] text-muted-foreground">
-            Global Horizon Studio
-          </p>
-        </div>
-      </div>
-
-      {/* small floating accents */}
-      <span className="absolute left-6 top-10 size-1.5 rounded-full bg-cyan-400/70" />
-      <span className="absolute bottom-14 right-4 size-2 rounded-full bg-primary/40" />
-      <span className="absolute bottom-6 left-16 size-1 rounded-full bg-amber-400/80" />
+        <motion.p
+          variants={{
+            hidden: { opacity: 0, y: 8 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
+          }}
+          className="flex items-center gap-2 text-muted-foreground"
+        >
+          <span className="select-none text-primary">$</span>
+          <span className="animate-blink inline-block h-4 w-2 translate-y-0.5 bg-primary/80" />
+        </motion.p>
+      </motion.div>
     </div>
   );
 }
 
+const FLOATING_CHIPS = [
+  { label: "Laravel", position: "-left-3 top-8 sm:-left-10", delay: "0s" },
+  { label: "React.js", position: "-right-3 top-24 sm:-right-12", delay: "1.4s" },
+  { label: "AWS", position: "-left-2 bottom-20 sm:-left-12", delay: "2.6s" },
+  { label: "MySQL", position: "-right-2 bottom-10 sm:-right-10", delay: "3.8s" },
+];
+
 function Hero() {
+  const typed = useTypewriter(TYPED_ROLES);
+
   return (
     <section id="top" className="relative overflow-hidden">
       {/* backdrop */}
       <div className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent)]" />
       <div className="animate-glow pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-16 pt-32 sm:px-8 lg:grid-cols-2 lg:gap-10 lg:pb-24 lg:pt-40">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-16 pt-28 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:pb-24 lg:pt-40">
         <div>
           <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0}>
             <span className="inline-flex items-center gap-2.5 rounded-full border bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
@@ -292,52 +273,83 @@ function Hero() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
               </span>
-              Full-stack digital studio · Remote-first
+              Open to freelance &amp; remote opportunities
             </span>
           </motion.div>
+
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
+            className="mt-7 font-mono text-xs font-medium uppercase tracking-[0.28em] text-primary"
+          >
+            {PROFILE.location}
+          </motion.p>
 
           <motion.h1
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={1}
-            className="mt-6 text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-[3.4rem]"
+            custom={1.2}
+            className="mt-3 text-5xl font-bold leading-[1.05] sm:text-6xl lg:text-7xl"
           >
-            Software that puts your business on the{" "}
-            <span className="bg-gradient-to-r from-primary via-sky-500 to-cyan-500 bg-clip-text text-transparent">
-              global horizon
+            {PROFILE.firstName}
+            <br />
+            <span className="bg-gradient-to-r from-primary via-emerald-400 to-signal bg-clip-text text-transparent">
+              {PROFILE.lastName}
+              <span className="text-signal">.</span>
             </span>
-            .
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={2}
-            className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
+            custom={1.6}
+            className="mt-5 text-lg font-semibold sm:text-xl"
           >
-            Global Horizon designs, builds and scales web platforms, mobile
-            apps, databases and AI automation — one team, one vision, from first
-            wireframe to global launch.
+            {PROFILE.role}
+          </motion.p>
+
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1.8}
+            className="mt-1 font-mono text-sm text-muted-foreground sm:text-base"
+          >
+            I build{" "}
+            <span className="font-semibold text-primary">{typed}</span>
+            <span className="animate-blink ml-0.5 inline-block h-4 w-[3px] translate-y-0.5 bg-primary/80" />
+          </motion.p>
+
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={2.1}
+            className="mt-6 max-w-xl text-base leading-7 text-muted-foreground"
+          >
+            {PROFILE.summary}
           </motion.p>
 
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={3}
-            className="mt-8 flex flex-wrap items-center gap-3"
+            custom={2.4}
+            className="mt-9 flex flex-wrap items-center gap-3"
           >
             <Button asChild size="lg" className="gap-2">
               <a href="#contact">
-                Start a project
+                Get in touch
                 <ArrowRight className="size-4" />
               </a>
             </Button>
             <Button asChild size="lg" variant="outline" className="gap-2">
-              <a href="#services">
-                Explore services
+              <a href="#work">
+                View my work
                 <ArrowDown className="size-4" />
               </a>
             </Button>
@@ -347,28 +359,53 @@ function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            custom={4}
-            className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-muted-foreground"
+            custom={2.7}
+            className="mt-8 flex flex-wrap items-center gap-2"
           >
-            <span className="inline-flex items-center gap-1.5">
-              <MapPin className="size-3.5 text-primary/70" /> Remote · Worldwide
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Zap className="size-3.5 text-primary/70" /> 120+ projects shipped
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Globe2 className="size-3.5 text-primary/70" /> Web · Mobile · Data · AI
-            </span>
+            <Button asChild variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+              <a href={`mailto:${PROFILE.email}`}>
+                <Mail className="size-4 text-primary/70" />
+                {PROFILE.email}
+              </a>
+            </Button>
+            <Button asChild variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+              <a href={PROFILE.phoneHref}>
+                <Phone className="size-4 text-primary/70" />
+                {PROFILE.phone}
+              </a>
+            </Button>
+            <Button asChild variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+              <a href={PROFILE.linkedin} target="_blank" rel="noreferrer">
+                <Linkedin className="size-4 text-primary/70" />
+                LinkedIn
+              </a>
+            </Button>
           </motion.div>
         </div>
 
         <motion.div
           initial={{ opacity: 0, y: 32, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
-          className="relative"
+          transition={{ duration: 0.8, ease: EASE, delay: 0.35 }}
+          className="relative mx-auto w-full max-w-lg lg:max-w-none"
         >
-          <OrbitVisual />
+          <div className="animate-glow pointer-events-none absolute left-1/2 top-1/2 size-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-3xl" />
+          <div className="relative">
+            <TerminalCard />
+            {FLOATING_CHIPS.map((chip) => (
+              <span
+                key={chip.label}
+                style={{ animationDelay: chip.delay }}
+                className={cn(
+                  "animate-float absolute z-10 hidden items-center gap-1.5 rounded-xl border bg-card px-3 py-2 text-xs font-semibold shadow-md sm:flex",
+                  chip.position,
+                )}
+              >
+                <span className="size-1.5 rounded-full bg-primary" />
+                {chip.label}
+              </span>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>
@@ -376,14 +413,13 @@ function Hero() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Stats                                                               */
-/* ------------------------------------------------------------------ */
+/* Stats                                                               */ /* ------------------------------------------------------------------ */
 
 const STATS = [
-  { icon: Package, value: "120+", label: "Projects delivered" },
-  { icon: Users, value: "60+", label: "Clients worldwide" },
-  { icon: ThumbsUp, value: "98%", label: "Client retention" },
-  { icon: Clock, value: "24h", label: "Average response" },
+  { icon: Briefcase, value: "3+ yrs", label: "Full-stack experience" },
+  { icon: Layers, value: "2", label: "Flagship platforms led" },
+  { icon: Code2, value: "Laravel · React", label: "Core stack" },
+  { icon: Cloud, value: "AWS", label: "Cloud & CI/CD pipelines" },
 ];
 
 function Stats() {
@@ -392,12 +428,12 @@ function Stats() {
       <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-border px-5 sm:px-8 lg:grid-cols-4">
         {STATS.map((stat, i) => (
           <Reveal key={stat.label} delay={i * 0.07}>
-            <div className="flex items-center gap-4 px-6 py-8 max-lg:[&:nth-child(-n+2)]:border-b max-lg:[&:nth-child(odd)]:border-l-0 max-lg:[&:nth-child(odd)]:pl-0 lg:justify-center">
+            <div className="flex items-center gap-4 px-5 py-8 lg:justify-center max-lg:[&:nth-child(-n+2)]:border-b max-lg:[&:nth-child(odd)]:border-l-0 max-lg:[&:nth-child(odd)]:pl-0">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <stat.icon className="size-5" />
               </span>
               <div>
-                <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
+                <p className="text-xl font-bold tracking-tight">{stat.value}</p>
                 <p className="text-xs font-medium text-muted-foreground">
                   {stat.label}
                 </p>
@@ -411,32 +447,29 @@ function Stats() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Marquee                                                             */
-/* ------------------------------------------------------------------ */
+/* Tech marquee                                                        */ /* ------------------------------------------------------------------ */
 
-const MARQUEE_ITEMS = [
-  "React",
-  "Next.js",
+const TECH_STACK = [
+  "PHP",
+  "Laravel",
+  "JavaScript",
   "TypeScript",
+  "React.js",
+  "Next.js",
   "Node.js",
-  "Python",
-  "Django",
-  "FastAPI",
-  "PostgreSQL",
+  "MySQL",
   "MongoDB",
-  "Redis",
-  "GraphQL",
-  "Flutter",
-  "React Native",
-  "Swift",
-  "Kotlin",
-  "OpenAI",
-  "LangChain",
-  "TensorFlow",
-  "AWS",
-  "Docker",
   "Tailwind CSS",
-  "Convex",
+  "Livewire",
+  "Inertia",
+  "Pest",
+  "Laravel Dusk",
+  "AWS",
+  "GitHub",
+  "GitLab",
+  "Postman",
+  "Jira",
+  "Slack",
 ];
 
 function Marquee() {
@@ -444,15 +477,11 @@ function Marquee() {
     <div className="marquee relative overflow-hidden border-y bg-card/60 py-4">
       <div className="marquee-track flex w-max items-center gap-10 pr-10">
         {[0, 1].map((copy) => (
-          <div
-            key={copy}
-            aria-hidden={copy === 1}
-            className="flex items-center gap-10"
-          >
-            {MARQUEE_ITEMS.map((item) => (
+          <div key={copy} aria-hidden={copy === 1} className="flex items-center gap-10">
+            {TECH_STACK.map((item) => (
               <span
                 key={`${copy}-${item}`}
-                className="flex items-center gap-10 whitespace-nowrap text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground/70"
+                className="flex items-center gap-10 whitespace-nowrap font-mono text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground/70"
               >
                 {item}
                 <span className="size-1.5 rounded-full bg-primary/40" />
@@ -466,232 +495,233 @@ function Marquee() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Services                                                            */
-/* ------------------------------------------------------------------ */
+/* About                                                               */ /* ------------------------------------------------------------------ */
 
-const SERVICES = [
-  {
-    icon: Code2,
-    title: "Web Development",
-    description:
-      "High-performance websites and web applications engineered for speed, SEO and conversion — from marketing sites to complex SaaS platforms.",
-    features: [
-      "Custom web applications",
-      "E-commerce & marketplaces",
-      "SaaS platforms & dashboards",
-      "CMS & marketing sites",
-    ],
-    tint: "bg-primary/10 text-primary",
-    border: "hover:border-primary/40",
-  },
-  {
-    icon: Database,
-    title: "Database Development",
-    description:
-      "Data architecture that scales with your business — clean schemas, fast queries and pipelines that turn raw data into decisions.",
-    features: [
-      "Schema design & modeling",
-      "Migration & ETL pipelines",
-      "Query optimization",
-      "Reporting & analytics",
-    ],
-    tint: "bg-teal-500/10 text-teal-600 dark:text-teal-400",
-    border: "hover:border-teal-500/40",
-  },
-  {
-    icon: BrainCircuit,
-    title: "AI Automation",
-    description:
-      "Intelligent workflows that do the heavy lifting — AI assistants, document processing and automation that save your team hours every day.",
-    features: [
-      "AI chatbots & copilots",
-      "Document & data processing",
-      "Workflow automation",
-      "Predictive analytics",
-    ],
-    tint: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
-    border: "hover:border-cyan-500/40",
-  },
-  {
-    icon: Smartphone,
-    title: "Mobile App Development",
-    description:
-      "Native-quality apps for iOS and Android that your users will love — fast, accessible and built to grow with your product.",
-    features: [
-      "Cross-platform apps",
-      "Native iOS & Android",
-      "App store launch support",
-      "API & backend integration",
-    ],
-    tint: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-    border: "hover:border-amber-500/40",
-  },
+const PRINCIPLES = [
+  { icon: Brain, title: "Problem-solving", text: "Critical thinking from schema to pixel." },
+  { icon: Users, title: "Teamwork", text: "Leading and collaborating across squads." },
+  { icon: MessagesSquare, title: "Communication", text: "Clear updates for clients and teams." },
+  { icon: Lightbulb, title: "Creativity", text: "Elegant solutions to hard product problems." },
 ];
 
-function Services() {
+function About() {
   return (
-    <section id="services" className="scroll-mt-24 py-20 lg:py-28">
+    <section id="about" className="scroll-mt-24 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeading
-            eyebrow="What we do"
-            title="Four disciplines, one horizon"
-            description="We cover the full software lifecycle under one roof — no juggling multiple vendors, no handoff gaps, just one team accountable for the whole product."
-          />
-          <Reveal delay={0.2} className="shrink-0">
-            <Button asChild variant="outline" className="gap-2">
-              <a href="#contact">
-                Get a free consult
-                <ArrowRight className="size-4" />
-              </a>
-            </Button>
-          </Reveal>
-        </div>
+        <div className="grid gap-12 lg:grid-cols-5 lg:gap-16">
+          <div className="lg:col-span-3">
+            <SectionHeading
+              eyebrow="About me"
+              title="Full-stack engineer who ships and leads"
+              description="From secure Laravel backends to polished React frontends — I own features end to end."
+            />
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map((service, i) => (
-            <motion.div
-              key={service.title}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-              custom={i}
-              className={cn(
-                "group relative flex flex-col rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5",
-                service.border,
-              )}
-            >
-              <div
-                className={cn(
-                  "mb-5 flex size-11 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110",
-                  service.tint,
-                )}
-              >
-                <service.icon className="size-5" />
-              </div>
-              <h3 className="text-lg font-semibold">{service.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {service.description}
+            <Reveal delay={0.12}>
+              <p className="mt-8 text-base leading-8 text-muted-foreground">
+                For the past three years I&apos;ve designed, built and deployed web
+                platforms that real businesses run on — marketplaces, research
+                communities and SaaS products. I&apos;ve led development teams,
+                managed sprints, and taken products from an empty repository to
+                cloud deployment with CI/CD pipelines behind them.
               </p>
-              <div className="mt-5 flex flex-1 flex-col gap-2.5 border-t pt-5">
-                {service.features.map((feature) => (
-                  <span
-                    key={feature}
-                    className="flex items-center gap-2 text-sm text-muted-foreground"
-                  >
-                    <Check className="size-3.5 shrink-0 text-primary" />
-                    {feature}
-                  </span>
-                ))}
-              </div>
-              <a
-                href="#contact"
-                className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
-              >
-                Start this service
-                <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-              </a>
-            </motion.div>
-          ))}
-        </div>
+            </Reveal>
+            <Reveal delay={0.18}>
+              <p className="mt-5 text-base leading-8 text-muted-foreground">
+                My comfort zone is the full stack: PHP and Laravel on the server,
+                React.js and Next.js on the client, MySQL and MongoDB underneath,
+                and AWS keeping it all reliable. I care about secure APIs,
+                clean database design and frontends that stay fast on any device.
+              </p>
+            </Reveal>
 
-        <Reveal delay={0.15}>
-          <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-2xl border bg-gradient-to-r from-primary/10 via-transparent to-cyan-500/10 px-6 py-6 sm:flex-row sm:px-8">
-            <div className="flex items-center gap-3.5">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                <Sparkles className="size-5" />
-              </span>
-              <div>
-                <p className="text-sm font-semibold">
-                  Not sure which service fits your idea?
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Book a free 30-minute consultation — we&apos;ll map the right path.
-                </p>
-              </div>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              {PRINCIPLES.map((principle, i) => (
+                <motion.div
+                  key={principle.title}
+                  variants={fadeUp}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-80px" }}
+                  custom={i}
+                  className="group flex items-start gap-4 rounded-2xl border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
+                    <principle.icon className="size-5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold">{principle.title}</p>
+                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                      {principle.text}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-            <Button asChild size="lg" className="shrink-0 gap-2">
-              <a href="#contact">
-                Talk to us
-                <ArrowRight className="size-4" />
-              </a>
-            </Button>
           </div>
-        </Reveal>
+
+          <div className="lg:col-span-2">
+            <Reveal delay={0.2}>
+              <div className="rounded-2xl border bg-card p-6 shadow-sm">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                  Education
+                </p>
+                <div className="mt-5 flex items-start gap-4">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <GraduationCap className="size-5" />
+                  </span>
+                  <div>
+                    <p className="text-base font-semibold leading-6">
+                      Bachelor of Computer Science
+                    </p>
+                    <p className="mt-1.5 text-sm text-muted-foreground">
+                      Allamah University · Kabul, Afghanistan
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.28}>
+              <div className="mt-6 rounded-2xl border bg-gradient-to-br from-primary/10 via-card to-signal/10 p-6 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                    <Sparkles className="size-5" />
+                  </span>
+                  <div>
+                    <p className="text-base font-semibold leading-6">Currently</p>
+                    <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                      Software Engineer &amp; Full-Stack Developer at{" "}
+                      <span className="font-medium text-foreground">
+                        Win Soft Technology
+                      </span>{" "}
+                      in Kabul — leading the development of Bazar Kabul, while
+                      open to freelance and remote collaborations.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.34}>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["Critical Thinking", "Problem-Solving", "Teamwork", "Creativity", "Time Management", "Communication"].map(
+                  (soft) => (
+                    <Badge key={soft} variant="secondary" className="font-medium">
+                      {soft}
+                    </Badge>
+                  ),
+                )}
+              </div>
+            </Reveal>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Process                                                             */
-/* ------------------------------------------------------------------ */
+/* Skills                                                              */ /* ------------------------------------------------------------------ */
 
-const PROCESS = [
+const SKILL_GROUPS = [
   {
-    icon: Search,
-    step: "01",
-    title: "Discover",
-    description:
-      "We dig into your goals, users and constraints — then define scope, architecture and a roadmap that matches your budget.",
+    icon: Code2,
+    title: "Programming Languages",
+    items: ["JavaScript", "TypeScript", "PHP", "Python"],
+    tint: "bg-primary/10 text-primary",
   },
   {
-    icon: PenTool,
-    step: "02",
-    title: "Design",
-    description:
-      "Wireframes, prototypes and a design system. You see exactly what we'll build before a single line of production code.",
+    icon: Server,
+    title: "Backend Technologies",
+    items: ["Laravel", "Node.js", "RESTful APIs"],
+    tint: "bg-teal-500/10 text-teal-600 dark:text-teal-400",
+  },
+  {
+    icon: Monitor,
+    title: "Frontend Technologies",
+    items: ["React.js", "Next.js", "HTML & CSS", "Tailwind CSS", "Bootstrap"],
+    tint: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
+  },
+  {
+    icon: Database,
+    title: "Databases",
+    items: ["MySQL", "MongoDB"],
+    tint: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  },
+  {
+    icon: Cloud,
+    title: "Cloud & CI/CD",
+    items: ["AWS", "GitHub", "GitLab"],
+    tint: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Testing & Quality",
+    items: ["Unit Testing", "Feature Testing", "API Testing", "Pest", "Laravel Dusk"],
+    tint: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+  },
+  {
+    icon: Boxes,
+    title: "Laravel Ecosystem",
+    items: ["Livewire", "Inertia", "Forge", "Sail"],
+    tint: "bg-primary/10 text-primary",
   },
   {
     icon: Wrench,
-    step: "03",
-    title: "Build",
-    description:
-      "Agile sprints with weekly demos. Web, mobile, database and AI work in parallel — one team, one shared roadmap.",
+    title: "Tools & Collaboration",
+    items: ["Postman", "Slack", "Jira"],
+    tint: "bg-teal-500/10 text-teal-600 dark:text-teal-400",
   },
   {
-    icon: Rocket,
-    step: "04",
-    title: "Launch & scale",
-    description:
-      "We deploy, monitor and iterate. Post-launch support and performance tuning keep your product ahead of the curve.",
+    icon: HeartHandshake,
+    title: "Soft Skills",
+    items: ["Critical Thinking", "Problem-Solving", "Teamwork", "Communication"],
+    tint: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
   },
 ];
 
-function Process() {
+function Skills() {
   return (
-    <section id="process" className="scroll-mt-24 bg-secondary/30 py-20 lg:py-28">
+    <section id="skills" className="scroll-mt-24 bg-secondary/30 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <SectionHeading
-          eyebrow="How we work"
-          title="A proven path to launch"
-          description="No mystery, no surprises. A transparent four-step process that takes you from idea to shipped product — and beyond."
+          eyebrow="Key skills"
+          title="A full-stack toolkit, end to end"
+          description="Nine categories covering everything it takes to take a product from idea to production — languages, frameworks, data, cloud and the soft skills that keep projects moving."
         />
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {PROCESS.map((step, i) => (
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {SKILL_GROUPS.map((group, i) => (
             <motion.div
-              key={step.step}
+              key={group.title}
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-80px" }}
-              custom={i}
-              className="group relative rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
+              custom={i % 3}
+              className="group rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
             >
-              <div className="flex items-center justify-between">
-                <span className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
-                  <step.icon className="size-5" />
+              <div className="flex items-center gap-3.5">
+                <span
+                  className={cn(
+                    "flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110",
+                    group.tint,
+                  )}
+                >
+                  <group.icon className="size-5" />
                 </span>
-                <span className="font-mono text-3xl font-bold text-muted-foreground/25">
-                  {step.step}
-                </span>
+                <h3 className="text-base font-semibold">{group.title}</h3>
               </div>
-              <h3 className="mt-5 text-lg font-semibold">{step.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {step.description}
-              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {group.items.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border bg-secondary/60 px-3 py-1 font-mono text-xs font-medium text-muted-foreground transition-colors group-hover:border-primary/30"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
             </motion.div>
           ))}
         </div>
@@ -701,49 +731,46 @@ function Process() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Work                                                                */
-/* ------------------------------------------------------------------ */
+/* Work — case studies                                                 */ /* ------------------------------------------------------------------ */
 
 const PROJECTS = [
   {
-    title: "Atlas Commerce",
-    tag: "Web platform",
-    service: "Web Development",
-    description:
-      "Headless e-commerce platform with a blazing-fast storefront, real-time inventory and a checkout tuned for conversion.",
-    tech: ["React", "Node.js", "PostgreSQL"],
-    gradient: "from-sky-500 via-blue-600 to-indigo-700",
+    name: "Bazar Kabul",
+    tag: "Online marketplace",
+    period: "2025 — Present",
+    company: "Win Soft Technology",
     icon: ShoppingBag,
+    gradient: "from-emerald-500 via-teal-500 to-cyan-500",
+    description:
+      "Led development of Bazar Kabul, a full online marketplace for buying, selling and posting advertisements — designing and managing the platform features that drive user engagement and transactions.",
+    contributions: [
+      "Developed full-stack features for posting, browsing and managing advertisements",
+      "Built secure backend APIs for authentication, product listings and payments",
+      "Optimized frontend performance with a responsive UI for web and mobile",
+      "Implemented search and filtering to help users find relevant products fast",
+      "Integrated notifications and messaging for buyer–seller communication",
+      "Deployed and maintained the application on the cloud for reliability",
+    ],
+    tech: ["Laravel", "React.js", "MySQL", "AWS"],
   },
   {
-    title: "Meridian Data Hub",
-    tag: "Data platform",
-    service: "Database Development",
+    name: "CENA Platform",
+    tag: "Climate knowledge sharing",
+    period: "2024 — 2025",
+    company: "CENA Project",
+    icon: Leaf,
+    gradient: "from-sky-500 via-blue-500 to-indigo-500",
     description:
-      "Warehouse and analytics backbone for a logistics company — ingesting millions of records a day with sub-second dashboards.",
-    tech: ["PostgreSQL", "Python", "dbt"],
-    gradient: "from-teal-500 via-cyan-600 to-blue-700",
-    icon: Database,
-  },
-  {
-    title: "Nova Support Copilot",
-    tag: "AI automation",
-    service: "AI Automation",
-    description:
-      "An AI assistant that resolves 70% of customer tickets instantly, and hands the rest to humans with full context.",
-    tech: ["OpenAI", "LangChain", "Convex"],
-    gradient: "from-blue-500 via-indigo-600 to-violet-700",
-    icon: Bot,
-  },
-  {
-    title: "Drift Delivery",
-    tag: "Mobile app",
-    service: "Mobile Development",
-    description:
-      "Real-time delivery app for riders and customers — live tracking, smart dispatch and offline-first reliability.",
-    tech: ["React Native", "Maps", "Node.js"],
-    gradient: "from-amber-500 via-orange-500 to-rose-500",
-    icon: Truck,
+      "Developed a collaborative platform for sharing climate research, resources and knowledge — with real-time chat and notifications that improve researcher and community engagement.",
+    contributions: [
+      "Designed modules for research sharing and resource management",
+      "Built a real-time chat and notification system for collaboration",
+      "Developed an intuitive frontend for easy access to climate data",
+      "Created secure backend APIs for research documents and user data",
+      "Optimized the database structure for large volumes of research material",
+      "Ensured scalability and reliability with cloud deployment",
+    ],
+    tech: ["Laravel", "Node.js", "MySQL", "Cloud"],
   },
 ];
 
@@ -751,26 +778,16 @@ function Work() {
   return (
     <section id="work" className="scroll-mt-24 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeading
-            eyebrow="Selected work"
-            title="Products we&apos;ve shipped"
-            description="A snapshot of recent builds across web, data, AI and mobile — each one designed, engineered and launched by the same team."
-          />
-          <Reveal delay={0.2} className="shrink-0">
-            <Button asChild variant="outline" className="gap-2">
-              <a href="#contact">
-                Build yours next
-                <ArrowRight className="size-4" />
-              </a>
-            </Button>
-          </Reveal>
-        </div>
+        <SectionHeading
+          eyebrow="Selected work"
+          title="Two platforms, built end to end"
+          description="Flagship products I engineered from database schema to cloud deployment — both serving real users in production."
+        />
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
+        <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {PROJECTS.map((project, i) => (
             <motion.article
-              key={project.title}
+              key={project.name}
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
@@ -780,7 +797,7 @@ function Work() {
             >
               <div
                 className={cn(
-                  "relative flex h-44 items-center justify-center overflow-hidden bg-gradient-to-br",
+                  "relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br",
                   project.gradient,
                 )}
               >
@@ -789,40 +806,45 @@ function Work() {
                 <div className="absolute -bottom-12 -left-8 size-40 rounded-full bg-black/15 blur-2xl" />
                 <project.icon className="relative size-14 text-white drop-shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6" />
                 <span className="absolute right-4 top-4 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
-                  {project.service}
+                  {project.tag}
                 </span>
               </div>
 
               <div className="flex flex-1 flex-col p-6">
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary/80">
-                  {project.tag}
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-xl font-semibold">{project.name}</h3>
+                  <span className="font-mono text-xs font-medium text-muted-foreground">
+                    {project.period}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm font-medium text-primary/90">
+                  {project.company}
                 </p>
-                <h3 className="mt-1.5 text-lg font-semibold">{project.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-6 text-muted-foreground">
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   {project.description}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-2">
+
+                <p className="mt-5 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                  Key contribution
+                </p>
+                <ul className="mt-3 flex flex-col gap-2">
+                  {project.contributions.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2.5 text-sm leading-6 text-muted-foreground"
+                    >
+                      <Check className="mt-1 size-3.5 shrink-0 text-primary" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-5 flex flex-wrap gap-2 border-t pt-5">
                   {project.tech.map((t) => (
-                    <Badge key={t} variant="secondary" className="font-medium">
+                    <Badge key={t} variant="secondary" className="font-mono font-medium">
                       {t}
                     </Badge>
                   ))}
-                </div>
-                <div className="mt-5 flex items-center gap-4 border-t pt-4 text-sm font-medium">
-                  <a
-                    href="#contact"
-                    className="inline-flex items-center gap-1.5 text-primary transition-colors hover:text-primary/80"
-                  >
-                    Start a similar project
-                    <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-                  </a>
-                  <a
-                    href="#contact"
-                    className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    <ExternalLink className="size-3.5" />
-                    Case study
-                  </a>
                 </div>
               </div>
             </motion.article>
@@ -834,139 +856,138 @@ function Work() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Testimonials                                                        */
-/* ------------------------------------------------------------------ */
+/* Experience timeline                                                 */ /* ------------------------------------------------------------------ */
 
-const TESTIMONIALS = [
+const EXPERIENCE = [
   {
-    quote:
-      "Global Horizon rebuilt our storefront in eight weeks. Conversion is up 34% and the platform hasn't hiccuped once since launch — easily the smoothest vendor relationship we've had.",
-    name: "Sarah Mitchell",
-    role: "COO, Atlas Commerce",
-    service: "Web Development",
-    initials: "SM",
-    gradient: "from-sky-500 to-indigo-600",
+    role: "Software Engineer & Full-Stack Developer",
+    company: "Win Soft Technology",
+    place: "Kabul, Afghanistan · Full-Time",
+    period: "03/2025 — Present",
+    current: true,
+    points: [
+      "Leading development of Bazar Kabul, an online marketplace for buying, selling and posting ads",
+      "Designing and managing platform features that improve engagement and transactions",
+      "Owning secure backend APIs, optimized frontends and cloud deployment",
+    ],
   },
   {
-    quote:
-      "They took our legacy warehouse data and turned it into a platform our analysts actually trust. Dashboards that took minutes now load in under a second.",
-    name: "Daniel Okafor",
-    role: "Head of Data, Meridian Logistics",
-    service: "Database Development",
-    initials: "DO",
-    gradient: "from-teal-500 to-cyan-600",
+    role: "Software Engineer & Full-Stack Developer",
+    company: "CENA Project — Platform for Enhancing Climate Knowledge",
+    place: "Remote · Full-stack",
+    period: "02/2024 — 02/2025",
+    current: false,
+    points: [
+      "Built a collaborative platform for sharing climate research and resources",
+      "Shipped real-time chat and notification systems for researcher engagement",
+      "Optimized database structure and ensured scalable cloud deployment",
+    ],
   },
   {
-    quote:
-      "Our AI support copilot now resolves 70% of tickets instantly. The team was thoughtful about guardrails and kept humans in the loop — our CSAT has never been higher.",
-    name: "Priya Sharma",
-    role: "VP Customer Experience, Nova Support",
-    service: "AI Automation",
-    initials: "PS",
-    gradient: "from-blue-500 to-violet-600",
+    role: "Junior Web Developer",
+    company: "Afghan Academy",
+    place: "Afghanistan · Part-time",
+    period: "04/2023 — 06/2023",
+    current: false,
+    points: [
+      "Built and maintained web features as part of a small development team",
+    ],
   },
   {
-    quote:
-      "From wireframe to the App Store in ten weeks. Live tracking, push notifications, offline mode — the app feels native on both platforms. Riders and customers love it.",
-    name: "Marcus Chen",
-    role: "Founder, Drift Delivery",
-    service: "Mobile App Development",
-    initials: "MC",
-    gradient: "from-amber-500 to-rose-500",
-  },
-  {
-    quote:
-      "Weekly demos meant zero surprises. Scope changes were costed transparently and folded in at sprint boundaries. It's the first agency that felt like an in-house team.",
-    name: "Elena Petrova",
-    role: "Product Manager, Cloudline SaaS",
-    service: "Web Development",
-    initials: "EP",
-    gradient: "from-indigo-500 to-sky-600",
-  },
-  {
-    quote:
-      "The AI pipeline they built processes thousands of patient documents a day with human review on edge cases. It saved our care team hours every single day.",
-    name: "James Whitfield",
-    role: "CEO, Northstar Health",
-    service: "AI Automation",
-    initials: "JW",
-    gradient: "from-cyan-500 to-emerald-600",
+    role: "Web Developer — Internship",
+    company: "Niakbeen Control Panel",
+    place: "Afghanistan · Part-time",
+    period: "09/2022 — 01/2024",
+    current: false,
+    points: [
+      "Learned production web development workflows and internal tooling",
+    ],
   },
 ];
 
-function Testimonials() {
+function Experience() {
   return (
-    <section id="testimonials" className="scroll-mt-24 bg-secondary/30 py-20 lg:py-28">
+    <section id="experience" className="scroll-mt-24 bg-secondary/30 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeading
-            eyebrow="Testimonials"
-            title="Clients who trusted the horizon"
-            description="Don&apos;t take our word for it — here&apos;s what founders and teams say after shipping with us."
+        <SectionHeading
+          eyebrow="Experience"
+          title="The path so far"
+          description="Three-plus years of shipping production software — from first internship to leading full-stack development."
+        />
+
+        <div className="relative mt-12">
+          <span
+            aria-hidden
+            className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-primary/50 via-border to-transparent sm:left-[23px]"
           />
-          <Reveal delay={0.2} className="shrink-0">
-            <div className="flex items-center gap-3.5 rounded-2xl border bg-card px-5 py-4 shadow-sm">
-              <span className="flex items-center gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
-                ))}
-              </span>
-              <div className="text-sm leading-tight">
-                <p className="font-bold">4.9 / 5 average</p>
-                <p className="text-xs font-medium text-muted-foreground">
-                  across 60+ client projects
-                </p>
-              </div>
-            </div>
-          </Reveal>
-        </div>
 
-        <div className="mt-12 columns-1 gap-6 md:columns-2 lg:columns-3">
-          {TESTIMONIALS.map((t, i) => (
-            <motion.figure
-              key={t.name}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-              custom={i}
-              className="mb-6 break-inside-avoid rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Quote className="size-5" />
-                </span>
-                <Badge variant="secondary" className="font-medium">
-                  {t.service}
-                </Badge>
-              </div>
-
-              <div className="mt-4 flex items-center gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="size-3.5 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
-
-              <blockquote className="mt-3 text-sm leading-7 text-muted-foreground">
-                “{t.quote}”
-              </blockquote>
-
-              <figcaption className="mt-5 flex items-center gap-3 border-t pt-4">
+          <div className="flex flex-col gap-6">
+            {EXPERIENCE.map((job, i) => (
+              <motion.div
+                key={`${job.company}-${job.period}`}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-80px" }}
+                custom={i}
+                className="relative flex gap-5 pl-0 sm:gap-7"
+              >
                 <span
                   className={cn(
-                    "flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-xs font-bold text-white shadow-sm",
-                    t.gradient,
+                    "relative z-10 mt-6 flex size-10 shrink-0 items-center justify-center rounded-full border-2 bg-card shadow-sm sm:size-12",
+                    job.current
+                      ? "border-primary text-primary"
+                      : "border-border text-muted-foreground",
                   )}
                 >
-                  {t.initials}
+                  <Briefcase className="size-4" />
+                  {job.current && (
+                    <span className="absolute -right-0.5 -top-0.5 flex size-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                      <span className="relative inline-flex size-3 rounded-full bg-emerald-500" />
+                    </span>
+                  )}
                 </span>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">{t.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">{t.role}</p>
+
+                <div className="flex-1 rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
+                  <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                    <div>
+                      <h3 className="text-base font-semibold leading-6 sm:text-lg">
+                        {job.role}
+                      </h3>
+                      <p className="mt-1 text-sm font-medium text-primary/90">
+                        {job.company}
+                      </p>
+                    </div>
+                    <span
+                      className={cn(
+                        "rounded-full px-3 py-1 font-mono text-[11px] font-semibold",
+                        job.current
+                          ? "bg-primary/10 text-primary"
+                          : "bg-secondary text-muted-foreground",
+                      )}
+                    >
+                      {job.period}
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-xs font-medium text-muted-foreground">
+                    {job.place}
+                  </p>
+                  <ul className="mt-4 flex flex-col gap-2">
+                    {job.points.map((point) => (
+                      <li
+                        key={point}
+                        className="flex items-start gap-2.5 text-sm leading-6 text-muted-foreground"
+                      >
+                        <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-primary/50" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </figcaption>
-            </motion.figure>
-          ))}
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -974,25 +995,26 @@ function Testimonials() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Contact                                                             */
-/* ------------------------------------------------------------------ */
+/* Contact                                                             */ /* ------------------------------------------------------------------ */
 
 const CONTACT_ROWS = [
+  { icon: Mail, label: "Email", value: PROFILE.email, href: `mailto:${PROFILE.email}` },
+  { icon: Phone, label: "Phone", value: PROFILE.phone, href: PROFILE.phoneHref },
+  { icon: MapPin, label: "Location", value: PROFILE.location },
   {
-    icon: Mail,
-    label: "Email",
-    value: "hello@webglobalhorizon.com",
-    href: "mailto:hello@webglobalhorizon.com",
+    icon: Linkedin,
+    label: "LinkedIn",
+    value: "Ekramullah Kiya",
+    href: PROFILE.linkedin,
   },
-  { icon: MapPin, label: "Location", value: "Remote-first · Worldwide" },
-  { icon: Clock, label: "Response time", value: "Usually within 24 hours" },
 ];
 
-const SERVICE_OPTIONS = [
-  "Web Development",
-  "Database Development",
-  "AI Automation",
-  "Mobile App Development",
+const TOPIC_OPTIONS = [
+  "Full-stack web application",
+  "Laravel / PHP backend",
+  "React.js / Next.js frontend",
+  "API design & integration",
+  "Cloud deployment & CI/CD",
   "Something else",
 ];
 
@@ -1003,11 +1025,10 @@ function Contact() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
+    const data = new FormData(event.currentTarget);
     const name = String(data.get("name") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
-    const service = String(data.get("service") ?? "").trim();
+    const topic = String(data.get("topic") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
 
     if (!name || !email || !message) {
@@ -1019,16 +1040,11 @@ function Contact() {
 
     setSending(true);
     try {
-      await sendMessage({
-        name,
-        email,
-        service: service || undefined,
-        message,
-      });
+      await sendMessage({ name, email, service: topic || undefined, message });
       toast.success("Message sent", {
-        description: "Thanks for reaching out — we'll get back to you within a day.",
+        description: "Thanks for reaching out — I'll get back to you soon.",
       });
-      form.reset();
+      formRef.current?.reset();
     } catch (error) {
       console.error("Failed to send message:", error);
       toast.error("Couldn't send your message", {
@@ -1040,56 +1056,65 @@ function Contact() {
   };
 
   return (
-    <section id="contact" className="scroll-mt-24 bg-secondary/30 py-20 lg:py-28">
+    <section id="contact" className="scroll-mt-24 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-5 lg:gap-16">
           <div className="lg:col-span-2">
             <SectionHeading
               eyebrow="Contact"
-              title="Let&apos;s build beyond the horizon"
-              description="Tell us what you're building — a website, an app, a data pipeline or an AI workflow. We'll reply within 24 hours with a clear plan."
+              title="Let's build something together"
+              description="Have a product to ship, a team to strengthen, or a Laravel/React project that needs an experienced full-stack engineer? Drop a message — I usually reply within 24 hours."
             />
 
             <div className="mt-8 flex flex-col gap-3">
               {CONTACT_ROWS.map((row, i) => (
                 <Reveal key={row.label} delay={i * 0.08}>
-                  <div className="flex items-center gap-4 rounded-xl border bg-card px-4 py-3.5 shadow-sm">
-                    <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <row.icon className="size-5" />
-                    </span>
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                        {row.label}
-                      </p>
-                      {row.href ? (
-                        <a
-                          href={row.href}
-                          className="text-sm font-semibold transition-colors hover:text-primary"
-                        >
-                          {row.value}
-                        </a>
-                      ) : (
+                  {row.href ? (
+                    <a
+                      href={row.href}
+                      target={row.href.startsWith("http") ? "_blank" : undefined}
+                      rel={row.href.startsWith("http") ? "noreferrer" : undefined}
+                      className="flex items-center gap-4 rounded-xl border bg-card px-4 py-3.5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+                    >
+                      <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <row.icon className="size-5" />
+                      </span>
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          {row.label}
+                        </p>
                         <p className="text-sm font-semibold">{row.value}</p>
-                      )}
+                      </div>
+                    </a>
+                  ) : (
+                    <div className="flex items-center gap-4 rounded-xl border bg-card px-4 py-3.5 shadow-sm">
+                      <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <row.icon className="size-5" />
+                      </span>
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          {row.label}
+                        </p>
+                        <p className="text-sm font-semibold">{row.value}</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </Reveal>
               ))}
             </div>
 
-            <Reveal delay={0.3}>
-              <div className="mt-8 rounded-2xl border bg-card p-5 shadow-sm">
-                <div className="flex items-start gap-3.5">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-cyan-500 text-primary-foreground">
-                    <Globe2 className="size-5" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold">Free project consultation</p>
-                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                      Not ready to commit? Walk through your idea with us first —
-                      no obligation, no pressure.
-                    </p>
-                  </div>
+            <Reveal delay={0.34}>
+              <div className="mt-8 flex items-start gap-3.5 rounded-2xl border bg-gradient-to-r from-primary/10 via-card to-signal/10 p-5 shadow-sm">
+                <span className="relative mt-1 flex size-2.5 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold">Available for new projects</p>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    Open to freelance work, remote full-time roles and
+                    long-term collaborations worldwide.
+                  </p>
                 </div>
               </div>
             </Reveal>
@@ -1109,7 +1134,7 @@ function Contact() {
                   <Input
                     id="contact-name"
                     name="name"
-                    placeholder="Jane Doe"
+                    placeholder="Your name"
                     autoComplete="name"
                     className="h-11"
                     required
@@ -1123,7 +1148,7 @@ function Contact() {
                     id="contact-email"
                     name="email"
                     type="email"
-                    placeholder="jane@company.com"
+                    placeholder="you@company.com"
                     autoComplete="email"
                     className="h-11"
                     required
@@ -1132,20 +1157,20 @@ function Contact() {
               </div>
 
               <div className="mt-5 flex flex-col gap-2">
-                <label htmlFor="contact-service" className="text-sm font-medium">
-                  Service you&apos;re interested in{" "}
+                <label htmlFor="contact-topic" className="text-sm font-medium">
+                  What do you need?{" "}
                   <span className="text-muted-foreground">(optional)</span>
                 </label>
                 <select
-                  id="contact-service"
-                  name="service"
+                  id="contact-topic"
+                  name="topic"
                   defaultValue=""
                   className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="" disabled>
-                    Select a service
+                    Select a topic
                   </option>
-                  {SERVICE_OPTIONS.map((option) => (
+                  {TOPIC_OPTIONS.map((option) => (
                     <option key={option} value={option}>
                       {option}
                     </option>
@@ -1155,12 +1180,12 @@ function Contact() {
 
               <div className="mt-5 flex flex-col gap-2">
                 <label htmlFor="contact-message" className="text-sm font-medium">
-                  Tell us about your project
+                  Message
                 </label>
                 <Textarea
                   id="contact-message"
                   name="message"
-                  placeholder="Goals, timeline, budget — anything that helps us understand what you need..."
+                  placeholder="Tell me about your project, timeline and goals..."
                   rows={5}
                   className="min-h-32 resize-y"
                   required
@@ -1169,7 +1194,7 @@ function Contact() {
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs text-muted-foreground">
-                  We usually reply within 24 hours — no spam, ever.
+                  Replies usually within 24 hours — no spam, ever.
                 </p>
                 <Button type="submit" size="lg" className="gap-2" disabled={sending}>
                   <Send className="size-4" />
@@ -1185,8 +1210,7 @@ function Contact() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Footer                                                              */
-/* ------------------------------------------------------------------ */
+/* Footer                                                              */ /* ------------------------------------------------------------------ */
 
 function Footer() {
   return (
@@ -1195,40 +1219,23 @@ function Footer() {
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm">
             <a href="#top" className="flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-cyan-500 text-primary-foreground">
-                <Globe2 className="size-5" />
+              <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-emerald-400 text-sm font-bold text-primary-foreground">
+                {PROFILE.initials}
               </span>
               <span className="text-sm font-semibold tracking-tight">
-                Global <span className="text-primary">Horizon</span>
+                {PROFILE.firstName} <span className="text-primary">{PROFILE.lastName}</span>
               </span>
             </a>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              A full-stack digital studio building web platforms, mobile apps,
-              databases and AI automation for clients around the world.
+              {PROFILE.role} — building scalable SaaS applications, secure
+              backends and optimized frontends with PHP, Laravel and React.js.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                Services
-              </p>
-              <ul className="mt-3 flex flex-col gap-2 text-sm">
-                {SERVICES.map((service) => (
-                  <li key={service.title}>
-                    <a
-                      href="#services"
-                      className="text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {service.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                Studio
+              <p className="font-mono text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                Explore
               </p>
               <ul className="mt-3 flex flex-col gap-2 text-sm">
                 {NAV_LINKS.map((link) => (
@@ -1244,25 +1251,55 @@ function Footer() {
               </ul>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                Contact
+              <p className="font-mono text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                Connect
               </p>
               <ul className="mt-3 flex flex-col gap-2 text-sm">
                 <li>
                   <a
-                    href="mailto:hello@webglobalhorizon.com"
-                    className="text-muted-foreground transition-colors hover:text-foreground"
+                    href={`mailto:${PROFILE.email}`}
+                    className="break-all text-muted-foreground transition-colors hover:text-foreground"
                   >
-                    hello@webglobalhorizon.com
+                    {PROFILE.email}
                   </a>
                 </li>
                 <li>
-                  <Link
-                    to="/auth?returnTo=/dashboard"
+                  <a
+                    href={PROFILE.phoneHref}
                     className="text-muted-foreground transition-colors hover:text-foreground"
                   >
-                    Client inbox
-                  </Link>
+                    {PROFILE.phone}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={PROFILE.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    LinkedIn
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-mono text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                Elsewhere
+              </p>
+              <ul className="mt-3 flex flex-col gap-2 text-sm">
+                <li>
+                  <span className="text-muted-foreground">
+                    Kabul, Afghanistan
+                  </span>
+                </li>
+                <li>
+                  <a
+                    href="#contact"
+                    className="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Send a message
+                  </a>
                 </li>
               </ul>
             </div>
@@ -1271,9 +1308,9 @@ function Footer() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row">
           <p className="text-xs text-muted-foreground">
-            © 2026 Global Horizon. All rights reserved.
+            © 2026 {PROFILE.fullName}. All rights reserved.
           </p>
-          <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
             <Code2 className="size-3.5 text-primary/70" />
             React · Tailwind · Convex
           </span>
@@ -1284,21 +1321,89 @@ function Footer() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Page                                                                */
-/* ------------------------------------------------------------------ */
+/* Page                                                                */ /* ------------------------------------------------------------------ */
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  return (
+    <motion.div
+      aria-hidden
+      style={{ scaleX: scrollYProgress }}
+      className="fixed inset-x-0 top-0 z-[60] h-0.5 origin-left bg-gradient-to-r from-primary via-emerald-400 to-signal"
+    />
+  );
+}
+
+function CtaBand() {
+  const containerVariants: Variants = {
+    hidden: { opacity: 0, y: 28 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+  };
+
+  return (
+    <section className="pb-20 lg:pb-28">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="relative overflow-hidden rounded-3xl border bg-gradient-to-br from-primary via-primary/90 to-emerald-500 px-8 py-14 text-center text-primary-foreground sm:px-12"
+        >
+          <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_20%_20%,white_1px,transparent_1px)] [background-size:22px_22px]" />
+          <div className="absolute -right-16 -top-16 size-64 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute -bottom-20 -left-10 size-64 rounded-full bg-black/10 blur-3xl" />
+
+          <div className="relative">
+            <h2 className="text-3xl font-bold sm:text-4xl">
+              Ready to build your next platform?
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-primary-foreground/85">
+              Whether it&apos;s a marketplace, a SaaS product or a rescue
+              mission on an existing codebase — let&apos;s talk about how I can
+              help ship it.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Button
+                asChild
+                size="lg"
+                className="gap-2 bg-background text-foreground hover:bg-background/90"
+              >
+                <a href="#contact">
+                  Start a conversation
+                  <ArrowRight className="size-4" />
+                </a>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="gap-2 border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+              >
+                <a href={`mailto:${PROFILE.email}`}>Email me</a>
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
 export default function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ScrollProgress />
       <Nav />
       <main>
         <Hero />
         <Stats />
         <Marquee />
-        <Services />
-        <Process />
+        <About />
+        <Skills />
         <Work />
-        <Testimonials />
+        <Experience />
+        <CtaBand />
         <Contact />
       </main>
       <Footer />

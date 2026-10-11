@@ -1,4 +1,3 @@
-import { Globe2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
@@ -7,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export const NAV_LINKS = [
-  { label: "Services", href: "/services" },
-  { label: "Process", href: "/#process" },
+  { label: "About", href: "/#about" },
+  { label: "Skills", href: "/#skills" },
   { label: "Work", href: "/#work" },
-  { label: "Testimonials", href: "/#testimonials" },
+  { label: "Experience", href: "/#experience" },
   { label: "Contact", href: "/#contact" },
 ];
 
@@ -35,11 +34,11 @@ export function SiteNav() {
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
         <Link to="/" className="group flex items-center gap-2.5">
-          <span className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-cyan-500 text-primary-foreground shadow-sm transition-transform duration-300 group-hover:-rotate-6">
-            <Globe2 className="size-5" />
+          <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-emerald-400 text-sm font-bold text-primary-foreground shadow-sm shadow-primary/20 transition-transform duration-300 group-hover:-rotate-6">
+            EK
           </span>
           <span className="text-sm font-semibold tracking-tight">
-            Global <span className="text-primary">Horizon</span>
+            Ekramullah <span className="text-primary">Kiya</span>
           </span>
         </Link>
 
@@ -57,11 +56,8 @@ export function SiteNav() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link to="/auth?returnTo=/dashboard">Sign in</Link>
-          </Button>
           <Button asChild size="sm">
-            <a href="/#contact">Start a project</a>
+            <a href="/#contact">Hire me</a>
           </Button>
         </div>
       </nav>
