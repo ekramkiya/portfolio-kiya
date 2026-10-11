@@ -737,6 +737,7 @@ function Skills() {
 const PROJECTS = [
   {
     name: "Bazar Kabul",
+    url: "https://bazarkabul.com",
     tag: "Online marketplace",
     period: "2025 — Present",
     icon: ShoppingBag,
