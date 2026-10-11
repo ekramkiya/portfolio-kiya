@@ -6,10 +6,12 @@ import {
   Boxes,
   Brain,
   Briefcase,
+  Calculator,
   Check,
   Cloud,
   Code2,
   Database,
+  ExternalLink,
   GraduationCap,
   HeartHandshake,
   Layers,
@@ -22,6 +24,7 @@ import {
   Monitor,
   Phone,
   Send,
+  ScanSearch,
   Server,
   ShieldCheck,
   ShoppingBag,
@@ -417,7 +420,7 @@ function Hero() {
 
 const STATS = [
   { icon: Briefcase, value: "3+ yrs", label: "Full-stack experience" },
-  { icon: Layers, value: "2", label: "Flagship platforms led" },
+  { icon: Layers, value: "4", label: "Products built end to end" },
   { icon: Code2, value: "Laravel · React", label: "Core stack" },
   { icon: Cloud, value: "AWS", label: "Cloud & CI/CD pipelines" },
 ];
@@ -590,12 +593,10 @@ function About() {
                   <div>
                     <p className="text-base font-semibold leading-6">Currently</p>
                     <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
-                      Software Engineer &amp; Full-Stack Developer at{" "}
-                      <span className="font-medium text-foreground">
-                        Win Soft Technology
-                      </span>{" "}
-                      in Kabul — leading the development of Bazar Kabul, while
-                      open to freelance and remote collaborations.
+                      Building and shipping production platforms from Kabul —
+                      marketplaces, an AI-detection SaaS and business systems —
+                      while staying open to freelance and remote
+                      collaborations.
                     </p>
                   </div>
                 </div>
@@ -738,7 +739,6 @@ const PROJECTS = [
     name: "Bazar Kabul",
     tag: "Online marketplace",
     period: "2025 — Present",
-    company: "Win Soft Technology",
     icon: ShoppingBag,
     gradient: "from-emerald-500 via-teal-500 to-cyan-500",
     description:
@@ -757,7 +757,6 @@ const PROJECTS = [
     name: "CENA Platform",
     tag: "Climate knowledge sharing",
     period: "2024 — 2025",
-    company: "CENA Project",
     icon: Leaf,
     gradient: "from-sky-500 via-blue-500 to-indigo-500",
     description:
@@ -772,6 +771,39 @@ const PROJECTS = [
     ],
     tech: ["Laravel", "Node.js", "MySQL", "Cloud"],
   },
+  {
+    name: "VenomDetects",
+    url: "https://venomdetects.com",
+    tag: "SaaS · AI detection",
+    icon: ScanSearch,
+    gradient: "from-lime-500 via-emerald-500 to-teal-600",
+    description:
+      "Built venomdetects.com — a SaaS platform that detects AI-generated content across text, images, audio and video, turning scans into clear confidence scores and shareable reports.",
+    contributions: [
+      "Built a multi-format detection engine for AI-generated text, images, audio and video",
+      "Designed secure RESTful APIs for scans, results and confidence scoring",
+      "Developed a responsive React.js dashboard for uploads, scan history and reports",
+      "Optimized media processing for fast scans of large uploads",
+      "Deployed on the cloud with CI/CD for reliable, scalable operation",
+    ],
+    tech: ["Laravel", "React.js", "MySQL", "AWS"],
+  },
+  {
+    name: "Green Industrial Park Accounting",
+    tag: "Accounting system",
+    icon: Calculator,
+    gradient: "from-amber-500 via-orange-500 to-rose-500",
+    description:
+      "A complete accounting system for Green Industrial Park in Kabul, Afghanistan — running day-to-day finances from invoicing and payments through to financial statements.",
+    contributions: [
+      "Designed the database schema for accounts, invoices, payments and ledgers",
+      "Built modules for invoicing, expense tracking and journal entries",
+      "Implemented profit & loss, balance sheet and cash-flow reporting",
+      "Added role-based access control for accounting and management staff",
+      "Optimized queries for fast reporting on large transaction volumes",
+    ],
+    tech: ["PHP", "Laravel", "MySQL"],
+  },
 ];
 
 function Work() {
@@ -780,8 +812,8 @@ function Work() {
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <SectionHeading
           eyebrow="Selected work"
-          title="Two platforms, built end to end"
-          description="Flagship products I engineered from database schema to cloud deployment — both serving real users in production."
+          title="Products, built end to end"
+          description="Four flagship products I engineered from database schema to cloud deployment — marketplaces, research platforms, AI tooling and business systems in production."
         />
 
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
@@ -813,13 +845,12 @@ function Work() {
               <div className="flex flex-1 flex-col p-6">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="text-xl font-semibold">{project.name}</h3>
-                  <span className="font-mono text-xs font-medium text-muted-foreground">
-                    {project.period}
-                  </span>
+                  {project.period && (
+                    <span className="font-mono text-xs font-medium text-muted-foreground">
+                      {project.period}
+                    </span>
+                  )}
                 </div>
-                <p className="mt-1 text-sm font-medium text-primary/90">
-                  {project.company}
-                </p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   {project.description}
                 </p>
@@ -839,12 +870,29 @@ function Work() {
                   ))}
                 </ul>
 
-                <div className="mt-5 flex flex-wrap gap-2 border-t pt-5">
-                  {project.tech.map((t) => (
-                    <Badge key={t} variant="secondary" className="font-mono font-medium">
-                      {t}
-                    </Badge>
-                  ))}
+                <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t pt-5">
+                  <div className="flex flex-wrap gap-2">
+                    {project.tech.map((t) => (
+                      <Badge
+                        key={t}
+                        variant="secondary"
+                        className="font-mono font-medium"
+                      >
+                        {t}
+                      </Badge>
+                    ))}
+                  </div>
+                  {project.url && (
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+                    >
+                      {project.url.replace(/^https?:\/\//, "")}
+                      <ExternalLink className="size-3.5" />
+                    </a>
+                  )}
                 </div>
               </div>
             </motion.article>
@@ -861,19 +909,19 @@ function Work() {
 const EXPERIENCE = [
   {
     role: "Software Engineer & Full-Stack Developer",
-    company: "Win Soft Technology",
+    context: "Online marketplace platform",
     place: "Kabul, Afghanistan · Full-Time",
     period: "03/2025 — Present",
     current: true,
     points: [
-      "Leading development of Bazar Kabul, an online marketplace for buying, selling and posting ads",
+      "Leading development of an online marketplace for buying, selling and posting ads",
       "Designing and managing platform features that improve engagement and transactions",
       "Owning secure backend APIs, optimized frontends and cloud deployment",
     ],
   },
   {
     role: "Software Engineer & Full-Stack Developer",
-    company: "CENA Project — Platform for Enhancing Climate Knowledge",
+    context: "Climate research platform",
     place: "Remote · Full-stack",
     period: "02/2024 — 02/2025",
     current: false,
@@ -885,7 +933,6 @@ const EXPERIENCE = [
   },
   {
     role: "Junior Web Developer",
-    company: "Afghan Academy",
     place: "Afghanistan · Part-time",
     period: "04/2023 — 06/2023",
     current: false,
@@ -895,7 +942,6 @@ const EXPERIENCE = [
   },
   {
     role: "Web Developer — Internship",
-    company: "Niakbeen Control Panel",
     place: "Afghanistan · Part-time",
     period: "09/2022 — 01/2024",
     current: false,
@@ -924,7 +970,7 @@ function Experience() {
           <div className="flex flex-col gap-6">
             {EXPERIENCE.map((job, i) => (
               <motion.div
-                key={`${job.company}-${job.period}`}
+                key={`${job.role}-${job.period}`}
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
@@ -952,12 +998,14 @@ function Experience() {
                 <div className="flex-1 rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
                   <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
                     <div>
-                      <h3 className="text-base font-semibold leading-6 sm:text-lg">
+                      <p className="text-base font-semibold leading-6 sm:text-lg">
                         {job.role}
-                      </h3>
-                      <p className="mt-1 text-sm font-medium text-primary/90">
-                        {job.company}
                       </p>
+                      {job.context && (
+                        <p className="mt-1 text-sm font-medium text-primary/90">
+                          {job.context}
+                        </p>
+                      )}
                     </div>
                     <span
                       className={cn(
