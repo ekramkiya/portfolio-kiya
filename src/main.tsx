@@ -1,7 +1,7 @@
 import '@vly-ai/integrations';
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
-import { RequireAuth } from "@/components/RequireAuth";
+
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
 // import { ConvexAuthProvider } from "@convex-dev/auth/react";
 // import { ConvexReactClient } from "convex/react";
